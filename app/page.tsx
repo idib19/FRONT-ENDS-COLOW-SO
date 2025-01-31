@@ -8,9 +8,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { Loader2 } from 'lucide-react';
+import { login } from '@/lib/auth';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -21,17 +22,21 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // Simulate API call - replace with actual authentication
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock authentication logic
-      if (email.includes('master')) {
+
+      const response = await login(username, password);
+
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('user', JSON.stringify(response.user));
+
+      if (response.user.role === 'master') {
         router.push('/master');
-      } else if (email.includes('partner')) {
+      } else if (response.user.role === 'partner') {
         router.push('/partner');
       } else {
         throw new Error('Invalid credentials');
       }
+
     } catch (error) {
       toast({
         variant: "destructive",
@@ -50,14 +55,14 @@ export default function LoginPage() {
         
         <form onSubmit={handleLogin} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="username">Username</Label>
             <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
-              placeholder="votre@email.com"
+              placeholder="username"
             />
           </div>
           

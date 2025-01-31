@@ -3,14 +3,17 @@
 import { Card } from "@/components/ui/card";
 import { BarChart } from "@/components/charts/BarChart";
 
-const chartData = [
-  { month: 'Jan', value: 400 },
-  { month: 'Feb', value: 300 },
-  { month: 'Mar', value: 500 },
-  { month: 'Apr', value: 450 },
-];
 
-export function ActivitySection() {
+export interface ActivitySectionProps {
+  totalCardRechargesAmount: number;
+  totalCardRechargesFees: number;
+  totalCardRechargesCommission: number;
+  comissionChartData : { month: string; value: number }[];
+}
+
+
+
+export function ActivitySection({ totalCardRechargesFees, totalCardRechargesAmount, totalCardRechargesCommission, comissionChartData }: ActivitySectionProps) {
   return (
     <Card className="p-4 mb-6">
       <h3 className="text-sm font-semibold mb-4">Activité</h3>
@@ -22,19 +25,19 @@ export function ActivitySection() {
           <div className="space-y-2">
             <div className="flex justify-between">
               <span>Total Rechargements clients</span>
-              <span>50 FCFA</span>
+              <span>{totalCardRechargesAmount || 0} FCFA</span>
             </div>
             <div className="flex justify-between">
               <span>Total Frais rechargements</span>
-              <span>2500 FCFA</span>
+              <span>{totalCardRechargesFees || 0} FCFA</span>
             </div>
             <div className="flex justify-between">
               <span>Total Marge sur change (Mark up)</span>
-              <span>350 FCFA</span>
+              <span>{totalCardRechargesCommission || 0} FCFA</span>
             </div>
             <div className="flex justify-between text-red-600">
               <span>Total Commission Colow So (ristourne)</span>
-              <span>650 FCFA</span>
+              <span>{totalCardRechargesCommission || 0} FCFA</span>
             </div>
           </div>
         </div>
@@ -42,7 +45,7 @@ export function ActivitySection() {
         <div className="h-48">
           <h4 className="text-sm font-semibold mb-2">Evolution mensuelle des commissions</h4>
           <BarChart 
-            data={chartData}
+            data={comissionChartData}
             xAxisKey="month"
             valueKey="value"
           />

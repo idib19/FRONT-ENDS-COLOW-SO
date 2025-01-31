@@ -3,13 +3,12 @@
 import { Card } from "@/components/ui/card";
 import { PieChart } from "@/components/charts/PieChart";
 
-const complaintsData = [
-  { status: 'Traité', value: 30 },
-  { status: 'En cours', value: 15 },
-  { status: 'Non pris', value: 5 },
-];
 
-export function ComplaintsSection() {
+export interface ComplaintsSectionProps {
+  complaintsData: { status: string; value: number }[];
+}
+
+export function ComplaintsSection({ complaintsData }: ComplaintsSectionProps) {
   return (
     <Card className="p-4">
       <h3 className="text-sm font-semibold mb-4">Réclamations</h3>
@@ -17,19 +16,21 @@ export function ComplaintsSection() {
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <div className="flex justify-between">
-            <span>Traité</span>
-            <span className="text-blue-600">Voir &gt;</span>
-          </div>
-          <div className="flex justify-between">
-            <span>En cours de résolution</span>
-            <span className="text-blue-600">Voir &gt;</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Non prise en charge</span>
-            <span className="text-blue-600">Voir &gt;</span>
-          </div>
-          <div className="flex justify-between font-semibold">
+          {complaintsData.map((complaint) => (
+            <div key={complaint.status} className="flex justify-between">
+              <span>{complaint.status}</span>
+              <div>
+                <span className="mr-2">{complaint.value}</span>
+                <button 
+                  onClick={() => console.log(`Viewing ${complaint.status}`)} 
+                  className="text-blue-600 hover:text-blue-800"
+                >
+                  Voir &gt;
+                </button>
+              </div>
+            </div>
+          ))}
+          <div className="flex justify-between font-semibold border-t pt-2">
             <span>Total Réclamations</span>
             <span>{complaintsData.reduce((acc, curr) => acc + curr.value, 0)}</span>
           </div>
