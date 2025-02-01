@@ -58,7 +58,7 @@ export default function MasterPortal() {
           uvBalance: data.balance,
           fcfaBalance: data.balance,
           colowSoRecharges: {
-            date: new Date(data.lastColowsoTransfert.createdAt).toLocaleDateString(),
+            date: new Date(data.lastColowsoTransfert.createdAt).toLocaleDateString('fr-FR', { timeZone: 'UTC' }),
             amount: data.lastColowsoTransfert.amount
           }
         });

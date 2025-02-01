@@ -9,26 +9,52 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getCardLoadHistory } from "@/lib/api/card-load";
 import { formatDate, formatCurrency } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { CardLoadHistoryItem } from "@/lib/api/card-load";
 
-const mockHistory = [
-  {
-    id: "1",
-    date: new Date(),
-    cardId: "CARD-001",
-    amount: 10000,
-    status: "completed",
-  },
-  {
-    id: "2",
-    date: new Date(),
-    cardId: "CARD-002",
-    amount: 5000,
-    status: "pending",
-  },
-];
+
+
+
+
 
 export function LoadCardHistory() {
+
+  const router = useRouter();
+  const [history, setHistory] = useState<CardLoadHistoryItem[]>([]);  
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push('/');
+      return;
+    }
+    const userString = localStorage.getItem('user');
+    if (!userString) {
+      router.push('/');
+      return;
+    }
+    const user = JSON.parse(userString);
+    const masterId = user.entityId;
+  
+  
+    const history = await getCardLoadHistory(token, masterId);    
+    setHistory(history);
+  };
+
+
+  fetchData();
+
+
+  }, []);
+
+
+
+
   return (
     <Card className="p-6">
       <h2 className="text-xl font-semibold mb-6">Historique des chargements</h2>
@@ -43,20 +69,16 @@ export function LoadCardHistory() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {mockHistory.map((item) => (
+            {history.map((item) => (
               <TableRow key={item.id}>
-                <TableCell>{formatDate(item.date)}</TableCell>
+                <TableCell>{formatDate(new Date(item.createdAt))}</TableCell>
                 <TableCell>{item.cardId}</TableCell>
                 <TableCell>{formatCurrency(item.amount)}</TableCell>
                 <TableCell>
                   <span
-                    className={`px-2 py-1 rounded-full text-xs ${
-                      item.status === "completed"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-yellow-100 text-yellow-800"
-                    }`}
+                    className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800"
                   >
-                    {item.status === "completed" ? "Complété" : "En attente"}
+                    Complété
                   </span>
                 </TableCell>
               </TableRow>

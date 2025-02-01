@@ -5,8 +5,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
+import { createCardLoad } from "@/lib/api/card-load";
+import { CreateCardLoadDTO } from "@/lib/api/card-load";
+import { useRouter } from "next/navigation";
+import { toast } from 'react-toastify';
 
 interface LoadCardFormData {
   cardId: string;
@@ -14,36 +17,50 @@ interface LoadCardFormData {
 }
 
 export function LoadCardForm() {
+  const router = useRouter();
   const [formData, setFormData] = useState<LoadCardFormData>({
     cardId: "",
     amount: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        router.push('/');
+        return;
+      }
+      const userString = localStorage.getItem('user');
+      if (!userString) {
+        router.push('/');
+        return;
+      }
+      const user = JSON.parse(userString);
+      const masterId = user.entityId; 
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      toast({
-        title: "Carte chargée",
-        description: "La carte a été chargée avec succès"
-      });
+     
+      const cardLoad: CreateCardLoadDTO = {
+        issuerId: masterId,
+        cardId: formData.cardId,
+        issuerModel: 'Master',
+        amount: parseFloat(formData.amount)
+      };
+
+      await createCardLoad(token, cardLoad);
+
+      toast.success("Le chargement de la carte a été effectué avec succès.");
       
       setFormData({
         cardId: "",
         amount: "",
       });
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Une erreur est survenue lors du chargement"
-      });
+      toast.error("Une erreur est survenue lors du chargement");
     } finally {
       setIsLoading(false);
     }
