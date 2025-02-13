@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { RechargeDetails } from "./RechargeDetails";
 import { RechargeAmount } from "./RechargeAmount";
 import { RechargeType } from "../types";
-import { verifyTransactionAmount } from "@/lib/api/account";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
+import { verifyTransactionAmount } from "@/lib/api/account";
 
 export function RechargeForm() {
   const [formData, setFormData] = useState<RechargeType>({
@@ -55,11 +55,11 @@ export function RechargeForm() {
         rechargeType: "uv",
       });
       
-    } catch (error) {
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Une erreur est survenue lors de la transaction"
+        description: error.message
       });
     } finally {
       setIsLoading(false);

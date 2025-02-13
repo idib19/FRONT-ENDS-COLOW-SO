@@ -9,6 +9,7 @@ export default function LoadCardPage() {
       <h1 className="text-2xl font-bold mb-6">Chargement de carte</h1>
       <div className="space-y-8">
         <LoadCardForm />
+        
         <LoadCardHistory />
       </div>
     </div>

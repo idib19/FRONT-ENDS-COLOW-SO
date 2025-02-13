@@ -39,7 +39,7 @@ export function BarChart({
         <Bar 
           dataKey={valueKey} 
           fill={CHART_COLORS.primary}
-          radius={DEFAULT_CHART_CONFIG.barRadius}
+          radius={DEFAULT_CHART_CONFIG.barRadius as [number, number, number, number]}
         />
       </RechartsBar>
     </ResponsiveContainer>

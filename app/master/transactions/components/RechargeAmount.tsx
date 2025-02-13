@@ -5,6 +5,15 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { RechargeFormProps } from "../types";
 
+// First, define the allowed recharge types
+type RechargeType = "uv" | "fcfa";
+
+// Update your form data interface
+interface FormData {
+  amount: string;
+  rechargeType: RechargeType;
+}
+
 export function RechargeAmount({ formData, setFormData }: RechargeFormProps) {
   return (
     <Card className="p-4">
@@ -27,7 +36,10 @@ export function RechargeAmount({ formData, setFormData }: RechargeFormProps) {
             id="rechargeType"
             className="w-full p-2 border rounded-md"
             value={formData.rechargeType}
-            onChange={(e) => setFormData({ ...formData, rechargeType: e.target.value })}
+            onChange={(e) => setFormData({ 
+              ...formData, 
+              rechargeType: e.target.value as RechargeType 
+            })}
             required
           >
             <option value="uv">UV</option>
